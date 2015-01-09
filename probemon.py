@@ -14,7 +14,6 @@ NAME = 'probemon'
 DESCRIPTION = "a command line tool for logging 802.11 probe request frames"
 
 
-
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid):
 	def packet_callback(packet):
 		if not packet.haslayer(Dot11):
@@ -72,7 +71,7 @@ def main():
 	logger.addHandler(handler)
 
 	built_packet_cb = build_packet_callback(args.time, logger, args.delimiter, args.mac_info, args.ssid)
-	sniff(iface=args.interface, prn=built_packet_cb)
+	sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 
 if __name__ == '__main__':
