@@ -35,10 +35,13 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid):
 		# append the mac address itself
 		fields.append(packet.addr2)
 
-		# parse mac address and look up the organization from the vendor byte
+		# parse mac address and look up the organization from the vendor octets
 		if mac_info:
-			parsed_mac = netaddr.EUI(packet.addr2)
-			fields.append(parsed_mac.oui.registration().org)
+			try:
+				parsed_mac = netaddr.EUI(packet.addr2)
+				fields.append(parsed_mac.oui.registration().org)
+			except netaddr.core.NotRegisteredError, e:
+				fields.append('UNKNOWN')
 
 		# include the SSID in the probe frame
 		if ssid:
