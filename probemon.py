@@ -85,7 +85,7 @@ def main():
 	logger.setLevel(logging.INFO)
 	handler = RotatingFileHandler(args.output, maxBytes=args.max_bytes, backupCount=args.max_backups)
 	logger.addHandler(handler)
-     logger.addHandler(logging.StreamHandler(sys.stdout))
+        logger.addHandler(logging.StreamHandler(sys.stdout))
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
