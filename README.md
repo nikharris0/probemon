@@ -26,6 +26,6 @@ optional arguments:
                         output field delimiter
   -f, --mac-info        include MAC address manufacturer
   -s, --ssid            include probe SSID in output
-
+  -l, --log             enable live scrolling view of the logfile
 ```
 
