@@ -72,6 +72,7 @@ def main():
 	parser.add_argument('-s', '--ssid', action='store_true', help="include probe SSID in output")
 	parser.add_argument('-r', '--rssi', action='store_true', help="include rssi in output")
 	parser.add_argument('-D', '--debug', action='store_true', help="enable debug output")
+	parser.add_argument('-l', '--log', action='store_true', help="enable scrolling live view of the logfile")
 	args = parser.parse_args()
 
 	if not args.interface:
@@ -85,11 +86,11 @@ def main():
 	logger.setLevel(logging.INFO)
 	handler = RotatingFileHandler(args.output, maxBytes=args.max_bytes, backupCount=args.max_backups)
 	logger.addHandler(handler)
-
+	if args.log:
+		logger.addHandler(logging.StreamHandler(sys.stdout))
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
-
 
 if __name__ == '__main__':
 	main()
