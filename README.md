@@ -1,7 +1,8 @@
 # probemon
 Modified to allow excluded list of MAC addresses and comment the fields for outputing to SIEM.
 
-######################################################
+
+
 A simple command line tool for monitoring and logging 802.11 probe frames
 
 I decided to build this simple python script using scapy so that I could record 802.11 probe frames over a long period of time. This was specifically useful in my use case: proving that a person or device was present at a given location at a given time.
