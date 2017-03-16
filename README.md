@@ -1,5 +1,5 @@
 # probemon
-Modified to allow excluded list of MAC addresses and comment the fields for outputing to SIEM.
+Modified to allow excluded list of MAC addresses, added daemon mode, and added quotes to the fields for SIEM output.
 
 
 
@@ -11,7 +11,8 @@ I decided to build this simple python script using scapy so that I could record 
 
 ```
 usage: probemon.py [-h] [-i INTERFACE] [-t TIME] [-o OUTPUT] [-b MAX_BYTES]
-                   [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s]
+                   [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s] [-r] [-D] [-l]
+                   [-e EXCLUDE] [-z]
 
 a command line tool for logging 802.11 probe request frames
 
@@ -30,6 +31,10 @@ optional arguments:
                         output field delimiter
   -f, --mac-info        include MAC address manufacturer
   -s, --ssid            include probe SSID in output
-  -l, --log             enable live scrolling view of the logfile
-```
-
+  -r, --rssi            include rssi in output
+  -D, --debug           enable debug output
+  -l, --log             enable scrolling live view of the logfile
+  -e EXCLUDE, --exclude EXCLUDE
+                        list of MAC addresses to exclude from output, one MAC
+                        per line
+  -z, --daemon          fork process and run in background
