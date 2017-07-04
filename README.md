@@ -6,26 +6,30 @@ I decided to build this simple python script using scapy so that I could record 
 ## Usage
 
 ```
-usage: probemon.py [-h] [-i INTERFACE] [-t TIME] [-o OUTPUT] [-b MAX_BYTES]
-                   [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s]
+usage: probemon.py [-h] -i INTERFACE [-t {iso,unix}] [-o OUTPUT]
+                   [-b MAX_BYTES] [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s]
+                   [-r] [-D] [-l]
 
 a command line tool for logging 802.11 probe request frames
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -i INTERFACE, --interface INTERFACE
-                        capture interface
-  -t TIME, --time TIME  output time format (unix, iso)
-  -o OUTPUT, --output OUTPUT
-                        logging output location
-  -b MAX_BYTES, --max-bytes MAX_BYTES
-                        maximum log size in bytes before rotating
-  -c MAX_BACKUPS, --max-backups MAX_BACKUPS
-                        maximum number of log files to keep
-  -d DELIMITER, --delimiter DELIMITER
-                        output field delimiter
-  -f, --mac-info        include MAC address manufacturer
-  -s, --ssid            include probe SSID in output
-  -l, --log             enable live scrolling view of the logfile
+  -h, --help      show this help message and exit
+
+Interface:
+  -i INTERFACE    Capturing interface
+
+Log options:
+  -t {iso,unix}   Time format (default: iso)
+  -o OUTPUT       Log file (default: probemon.log)
+  -b MAX_BYTES    Log rotation size in bytes (default: 5242880 (5MB))
+  -c MAX_BACKUPS  Number log files to keep (default: 200)
+  -d DELIMITER    Field delimiter (default: \t)
+  -f              Exclude MAC address vendor from output
+  -s              Exclude SSID probe from output
+  -r              Exclude rssi from output
+
+Additional options:
+  -D              Enable debug output
+  -l              Enable scrolling live view of the logfile
 ```
 
