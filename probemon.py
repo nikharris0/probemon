@@ -53,9 +53,10 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 			fields.append(packet.info)
 			
 		if rssi:
-			rssi_val = -(256-ord(packet.notdecoded[-4:-3]))
+			rssi_val = packet.dBm_AntSignal
 			fields.append(str(rssi_val))
 
+		print delimiter.join(fields)
 		logger.info(delimiter.join(fields))
 
 	return packet_callback
