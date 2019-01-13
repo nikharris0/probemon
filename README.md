@@ -7,7 +7,9 @@ I decided to build this simple python script using scapy so that I could record 
 
 ```
 usage: probemon.py [-h] [-i INTERFACE] [-t TIME] [-o OUTPUT] [-b MAX_BYTES]
-                   [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s]
+                   [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s] [-r] [-D] [-l]
+                   [-x MQTT_BROKER] [-u MQTT_USER] [-p MQTT_PASSWORD]
+                   [-m MQTT_TOPIC]
 
 a command line tool for logging 802.11 probe request frames
 
@@ -26,6 +28,16 @@ optional arguments:
                         output field delimiter
   -f, --mac-info        include MAC address manufacturer
   -s, --ssid            include probe SSID in output
-  -l, --log             enable live scrolling view of the logfile
+  -r, --rssi            include rssi in output
+  -D, --debug           enable debug output
+  -l, --log             enable scrolling live view of the logfile
+  -x MQTT_BROKER, --mqtt-broker MQTT_BROKER
+                        mqtt broker server
+  -u MQTT_USER, --mqtt-user MQTT_USER
+                        mqtt user
+  -p MQTT_PASSWORD, --mqtt-password MQTT_PASSWORD
+                        mqtt password
+  -m MQTT_TOPIC, --mqtt-topic MQTT_TOPIC
+                        mqtt topic
 ```
 
