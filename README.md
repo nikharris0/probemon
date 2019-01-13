@@ -18,8 +18,6 @@ optional arguments:
   -i INTERFACE, --interface INTERFACE
                         capture interface
   -t TIME, --time TIME  output time format (unix, iso)
-  -o OUTPUT, --output OUTPUT
-                        logging output location
   -b MAX_BYTES, --max-bytes MAX_BYTES
                         maximum log size in bytes before rotating
   -c MAX_BACKUPS, --max-backups MAX_BACKUPS
