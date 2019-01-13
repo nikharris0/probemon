@@ -67,6 +67,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi, mqt
                 sensor_data['macaddress'] = packet.addr2
                 sensor_data['time'] = log_time
                 sensor_data['make'] = mac_make
+                sensor_data['ssid'] = packet.info
                 sensor_data['rssi'] = rssi_val
 
 		logger.info(delimiter.join(fields))
