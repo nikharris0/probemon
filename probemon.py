@@ -21,7 +21,7 @@ sensor_data = {'macaddress':"", 'time':"", 'make':"", 'ssid':"", 'rssi':0}
 
 DEBUG = False
 
-def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
+def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi, mqtt_topic):
 	def packet_callback(packet):
 
                 global sensor_data
@@ -71,11 +71,14 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 
 		logger.info(delimiter.join(fields))
 
-                client.publish('probemon/request', json.dumps(sensor_data), 1)
+                client.publish(mqtt_topic, json.dumps(sensor_data), 1)
 
 	return packet_callback
 
 def main():
+
+        global topic
+
 	parser = argparse.ArgumentParser(description=DESCRIPTION)
 	parser.add_argument('-i', '--interface', help="capture interface")
 	parser.add_argument('-t', '--time', default='iso', help="output time format (unix, iso)")
@@ -112,7 +115,7 @@ def main():
 	if args.log:
 		logger.addHandler(logging.StreamHandler(sys.stdout))
 	built_packet_cb = build_packet_callback(args.time, logger, 
-		args.delimiter, args.mac_info, args.ssid, args.rssi)
+		args.delimiter, args.mac_info, args.ssid, args.rssi, args.mqtt_topic)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0)
 
 if __name__ == '__main__':
