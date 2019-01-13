@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import time
-import datetime
+from datetime import datetime
 import argparse
 import netaddr
 import sys
@@ -19,9 +19,6 @@ DEBUG = False
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 	def packet_callback(packet):
 		
-		if not packet.haslayer(Dot11):
-			return
-
 		# we are looking for management frames with a probe subtype
 		# if neither match we are done here
 		if packet.type != 0 or packet.subtype != 0x04:
@@ -33,7 +30,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 		# determine preferred time format 
 		log_time = str(int(time.time()))
 		if time_fmt == 'iso':
-			log_time = datetime.datetime.now().isoformat()
+			log_time = datetime.now().isoformat()
 
 		fields.append(log_time)
 
