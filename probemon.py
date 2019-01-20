@@ -92,6 +92,7 @@ def main():
 	parser.add_argument('-D', '--debug', action='store_true', help="enable debug output")
 	parser.add_argument('-l', '--log', action='store_true', help="enable scrolling live view of the logfile")
         parser.add_argument('-x', '--mqtt-broker', default='', help="mqtt broker server")
+	parser.add_argument('-o', '--mqtt-port', default='1883', help="mqtt broker server")
         parser.add_argument('-u', '--mqtt-user', default='', help="mqtt user")
         parser.add_argument('-p', '--mqtt-password', default='', help="mqtt password")
         parser.add_argument('-m', '--mqtt-topic', default='probemon/request', help="mqtt topic")
@@ -107,7 +108,7 @@ def main():
             client.username_pw_set(args.mqtt_user, args.mqtt_password)
 
         if args.mqtt_broker:
-            client.connect(args.mqtt_broker, 1883, 1)
+            client.connect(args.mqtt_broker, args.mqtt_port, 1)
             client.loop_start()
 
 	# setup our rotating logger
