@@ -92,7 +92,7 @@ def main():
 	parser.add_argument('-D', '--debug', action='store_true', help="enable debug output")
 	parser.add_argument('-l', '--log', action='store_true', help="enable scrolling live view of the logfile")
         parser.add_argument('-x', '--mqtt-broker', default='', help="mqtt broker server")
-	parser.add_argument('-o', '--mqtt-port', default='1883', help="mqtt broker server")
+	parser.add_argument('-o', '--mqtt-port', default='1883', help="mqtt broker port")
         parser.add_argument('-u', '--mqtt-user', default='', help="mqtt user")
         parser.add_argument('-p', '--mqtt-password', default='', help="mqtt password")
         parser.add_argument('-m', '--mqtt-topic', default='probemon/request', help="mqtt topic")
@@ -101,7 +101,7 @@ def main():
 	if not args.interface:
 		print "error: capture interface not given, try --help"
 		sys.exit(-1)
-	
+
 	DEBUG = args.debug
 
         if args.mqtt_user and args.mqtt_password:
@@ -118,7 +118,7 @@ def main():
 		logger.addHandler(logging.StreamHandler(sys.stdout))
 	built_packet_cb = build_packet_callback(args.time, logger, 
 		args.delimiter, args.mac_info, args.ssid, args.rssi, args.mqtt_topic)
-	sniff(iface=args.interface, prn=built_packet_cb, store=0)
+	sniff(iface=args.interface, prn=built_packet_cb, store=0, monitor=True)
 
 if __name__ == '__main__':
 	main()
