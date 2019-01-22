@@ -1,13 +1,17 @@
 #!/usr/bin/python
 
+import argparse
 import time
 from datetime import datetime
-import argparse
 import netaddr
+import os
 import sys
-import logging
+import time
 import paho.mqtt.client as mqtt
 import json
+import struct
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 from pprint import pprint
 from logging.handlers import RotatingFileHandler
@@ -20,6 +24,37 @@ client = mqtt.Client()
 sensor_data = {'macaddress':"", 'time':"", 'make':"", 'ssid':"", 'rssi':0}
 
 DEBUG = False
+def parse_rssi(packet):
+    # parse dbm_antsignal from radiotap header
+    # borrowed from python-radiotap module
+    radiotap_header_fmt = '<BBHI'
+    radiotap_header_len = struct.calcsize(radiotap_header_fmt)
+    version, pad, radiotap_len, present = struct.unpack_from(radiotap_header_fmt, packet)
+
+    start = radiotap_header_len
+    bits = [int(b) for b in bin(present)[2:].rjust(32, '0')]
+    bits.reverse()
+    if bits[5] == 0:
+        return 0
+
+    while present & (1 << 31):
+        present, = struct.unpack_from('<I', packet, start)
+        start += 4
+    offset = start
+    if bits[0] == 1:
+        offset = (offset + 8 -1) & ~(8-1)
+        offset += 8
+    if bits[1] == 1:
+        offset += 1
+    if bits[2] == 1:
+        offset += 1
+    if bits[3] == 1:
+        offset = (offset + 2 -1) & ~(2-1)
+        offset += 4
+    if bits[4] == 1:
+        offset += 2
+    dbm_antsignal, = struct.unpack_from('<b', packet, offset)
+    return dbm_antsignal
 
 def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi, mqtt_topic):
 	def packet_callback(packet):
@@ -35,7 +70,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi, mqt
 		# list of output fields
 		fields = []
 
-		# determine preferred time format 
+		# determine preferred time format
 		log_time = str(int(time.time()))
 		if time_fmt == 'iso':
 			log_time = datetime.now().isoformat()
@@ -58,21 +93,21 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi, mqt
 		# include the SSID in the probe frame
 		if ssid:
 			fields.append(packet.info)
-	        
+
                 rssi_val = 0
 		if rssi:
-			rssi_val = -(256-ord(packet.notdecoded[-4:-3]))
+			rssi_val = parse_rssi(buffer(str(packet)))
 			fields.append(str(rssi_val))
 
                 sensor_data['macaddress'] = packet.addr2
                 sensor_data['time'] = log_time
-                sensor_data['make'] = mac_make
-                sensor_data['ssid'] = packet.info
+                sensor_data['make'] = mac_make.decode("utf-8")
+                sensor_data['ssid'] = packet.info.decode("utf-8")
                 sensor_data['rssi'] = rssi_val
 
-		logger.info(delimiter.join(fields))
+		logger.info(delimiter.join( [f.decode("utf-8") for f in fields] ))
 
-                client.publish(mqtt_topic, json.dumps(sensor_data), 1)
+                client.publish(mqtt_topic, json.dumps( sensor_data ), 1)
 
 	return packet_callback
 
@@ -116,7 +151,7 @@ def main():
 	logger.setLevel(logging.INFO)
 	if args.log:
 		logger.addHandler(logging.StreamHandler(sys.stdout))
-	built_packet_cb = build_packet_callback(args.time, logger, 
+	built_packet_cb = build_packet_callback(args.time, logger,
 		args.delimiter, args.mac_info, args.ssid, args.rssi, args.mqtt_topic)
 	sniff(iface=args.interface, prn=built_packet_cb, store=0, monitor=True)
 
