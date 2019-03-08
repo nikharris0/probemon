@@ -9,7 +9,7 @@ I decided to build this simple python script using scapy so that I could record 
 usage: probemon.py [-h] [-i INTERFACE] [-t TIME] [-o OUTPUT] [-b MAX_BYTES]
                    [-c MAX_BACKUPS] [-d DELIMITER] [-f] [-s] [-r] [-D] [-l]
                    [-x MQTT_BROKER] [-u MQTT_USER] [-p MQTT_PASSWORD]
-                   [-m MQTT_TOPIC]
+                   [-m MQTT_TOPIC] [-P FILENAME]
 
 a command line tool for logging 802.11 probe request frames
 
@@ -29,6 +29,8 @@ optional arguments:
   -r, --rssi            include rssi in output
   -D, --debug           enable debug output
   -l, --log             enable scrolling live view of the logfile
+  -P FILENAME, --pid FILENAME
+                        save PID to file
   -x MQTT_BROKER, --mqtt-broker MQTT_BROKER
                         mqtt broker server
   -u MQTT_USER, --mqtt-user MQTT_USER
@@ -39,3 +41,21 @@ optional arguments:
                         mqtt topic
 ```
 
+## systemd Service-File Example
+
+```
+[Unit]
+Description=Probemon MQTT Service
+
+[Service]
+PIDFile=/run/probemon.pid
+RemainAfterExit=no
+Restart=on-failure
+RestartSec=5s
+ExecStart=/root/python/probemon/probemon.py -i mon0 --mac-info --ssid --rssi --mqtt-broker IP --mqtt-user USERNAME --mqtt-password PASSWORD --mqtt-topic TOPIC  --pid /run/probemon.pid
+StandardOutput=null
+
+[Install]
+WantedBy=multi-user.target
+Alias=probemon.servic
+```
