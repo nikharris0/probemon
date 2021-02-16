@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import time
 import datetime
@@ -45,7 +45,7 @@ def build_packet_callback(time_fmt, logger, delimiter, mac_info, ssid, rssi):
 			try:
 				parsed_mac = netaddr.EUI(packet.addr2)
 				fields.append(parsed_mac.oui.registration().org)
-			except netaddr.core.NotRegisteredError, e:
+			except(netaddr.core.NotRegisteredError, e):
 				fields.append('UNKNOWN')
 
 		# include the SSID in the probe frame
@@ -76,7 +76,7 @@ def main():
 	args = parser.parse_args()
 
 	if not args.interface:
-		print "error: capture interface not given, try --help"
+		print("error: capture interface not given, try --help")
 		sys.exit(-1)
 	
 	DEBUG = args.debug
